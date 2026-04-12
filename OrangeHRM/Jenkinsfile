@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'JDK21'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/MohasinK/OrangeHRM.git'
+            }
+        }
+
+        stage('Clean Build') {
+            steps {
+                bat 'mvn clean'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat 'mvn test -Dsurefire.suiteXmlFiles=testng.xml'
+            }
+        }
+
+        stage('Publish Report') {
+            steps {
+                publishHTML([
+                    reportDir: 'Reports',
+                    reportFiles: 'OrangeHRM_ExtentReport.html',
+                    reportName: 'Extent Report'
+                ])
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'ScreenShots/*.png', allowEmptyArchive: true
+        }
+
+        success {
+            echo 'Build Passed ✅'
+        }
+
+        failure {
+            echo 'Build Failed ❌'
+        }
+    }
+}
