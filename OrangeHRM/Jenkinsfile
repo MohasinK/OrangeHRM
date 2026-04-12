@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
+        maven 'Maven1'
         jdk 'JDK21'
     }
 
@@ -15,22 +15,21 @@ pipeline {
             }
         }
 
-        stage('Clean Build') {
+        stage('Run Tests') {
             steps {
-                bat 'mvn clean'
+                dir('OrangeHRM') {
+                    bat 'mvn clean test -Dchrome.headless=true'
+                }
             }
         }
 
-           stage('Run Tests') {
-        steps {
-            bat 'mvn clean test -Dchrome.headless=true'
-        }
-    }
-
         stage('Publish Report') {
             steps {
-                publishHTML([
-                    reportDir: 'Reports',
+                publishHTML(target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'OrangeHRM/Reports',
                     reportFiles: 'OrangeHRM_ExtentReport.html',
                     reportName: 'Extent Report'
                 ])
@@ -40,7 +39,8 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'ScreenShots/*.png', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'OrangeHRM/ScreenShots/*.png',
+                             allowEmptyArchive: true
         }
 
         success {
