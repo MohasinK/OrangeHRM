@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
 import java.util.Properties;
 
 import org.openqa.selenium.OutputType;
@@ -20,17 +17,11 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 
-import com.OrangeHRM.Utility.ExtentManager;
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -57,7 +48,7 @@ public class BaseClass {
 	}
 
 	// --- new helper to construct ChromeOptions for Jenkins/CI and local runs ---
-	private static ChromeOptions buildChromeOptions() {
+	private static ChromeOptions buildChromeOptions(String headless) {
 		ChromeOptions options = new ChromeOptions();
 		// Detect CI/Jenkins environment by common environment variables
 		String jenkinsHome = System.getenv("JENKINS_HOME");
@@ -66,13 +57,15 @@ public class BaseClass {
 		boolean isCI = (jenkinsHome != null && !jenkinsHome.isEmpty()) || (ciEnv != null && ciEnv.equalsIgnoreCase("true")) || "true".equalsIgnoreCase(System.getProperty("ci"));
 
 		// Allow overriding headless via property
-		String headlessProp = getConfig("chrome.headless", isCI ? "true" : "false");
-		boolean headless = "true".equalsIgnoreCase(headlessProp);
+		boolean isHeadless =
+		        "true".equalsIgnoreCase(headless)
+		        || isCI;
 
-		if (isCI || headless) {
+		if (isHeadless){
 			// Recommended flags for running Chrome in CI (Jenkins) environments
 			// Use new headless option where available; fall back to --headless
-			if (headless) options.addArguments("--headless=new");
+//			if (headless) options.addArguments("--headless=new");
+			options.addArguments("--headless=new");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
 			options.addArguments("--disable-gpu");
@@ -186,7 +179,9 @@ public class BaseClass {
      * Setup driver. Accepts a TestNG parameter named "browser" (chrome|firefox|edge).
      * If not provided or equal to "default", uses property from config.properties.
      */
-    public static void setup(@Optional("default") String browser) {
+	
+	public static void setup(@Optional("default") String browser,
+            @Optional("false") String headless){
         String defaultBrowser = getConfig("browser.default", "chrome");
         String b = (browser == null || "default".equalsIgnoreCase(browser)) ? defaultBrowser : browser.toLowerCase().trim();
 
@@ -208,7 +203,7 @@ public class BaseClass {
             default:
                 WebDriverManager.chromedriver().setup();
                 // Use helper to build ChromeOptions appropriate for CI (Jenkins) or local runs
-                ChromeOptions co = buildChromeOptions();
+                ChromeOptions co = buildChromeOptions(headless);
                 drv = new ChromeDriver(co);
                 break;
         }
@@ -221,7 +216,9 @@ public class BaseClass {
         int implicit = getConfigInt("implicitly.wait.seconds", 10);
         int pageLoad = getConfigInt("pageLoad.timeout.seconds", 30);
 
-        driver.manage().window().maximize();
+        if (!"true".equalsIgnoreCase(headless)) {
+            driver.manage().window().maximize();
+        }
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicit));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(pageLoad));
         driver.get(getConfig("URL",""));

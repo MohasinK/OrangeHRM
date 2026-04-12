@@ -2,6 +2,7 @@ package TestCases;
 
 import java.io.IOException;
 
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -13,6 +14,8 @@ import com.OrangeHRM.Base.BaseClass;
 import com.OrangeHRM.ExceL.ExcelLibrary;
 import com.OrangeHRM.Pages.LoginPage;
 import com.OrangeHRM.Utility.TestLogger;
+import java.lang.reflect.Method;
+import org.testng.annotations.BeforeMethod;
 
 public class LoginPageTest extends BaseClass{
 	private LoginPage login;
@@ -21,13 +24,28 @@ public class LoginPageTest extends BaseClass{
 	TestLogger logger = new TestLogger(LoginPageTest.class);
 	
 	@BeforeClass
-	@Parameters({"browser"})
-	public void setUp(@Optional("chrome") String browser) throws IOException {
+	@Parameters({"browser", "headless"})
+	public void setUp(
+	        @Optional("chrome") String browser,
+	        @Optional("false") String headless) throws IOException {
 	    logger.start("Initializing LoginPageTest...");
-	    BaseClass.setup(browser);
+	    BaseClass.setup(browser, headless);
 	    login = new LoginPage();
 	    excel = new ExcelLibrary();
 	    logger.end("LoginPageTest setup completed.");
+	}
+	
+	@BeforeMethod
+	public void printTestCaseInfo(Method method) {
+	    Test testAnnotation = method.getAnnotation(Test.class);
+
+	    String testName = method.getName();
+	    String description = testAnnotation.description();
+
+	    System.out.println("==================================================");
+	    System.out.println("STARTING TEST CASE : " + testName);
+	    System.out.println("DESCRIPTION        : " + description);
+	    System.out.println("==================================================");
 	}
 	
 	@Test(priority = 1,description = "To verify navigate to login page")
@@ -100,7 +118,7 @@ public class LoginPageTest extends BaseClass{
 	
 	@AfterClass
 	public void tearDown() {
-		//driver.quit();
+		driver.quit();
 	}
 	
 	
