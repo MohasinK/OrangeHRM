@@ -1,3 +1,6 @@
+//Author : Mohasin
+
+
 package TestCases;
 
 import java.io.IOException;
@@ -127,6 +130,7 @@ public class LoginPageTest extends BaseClass{
 		boolean flag = login.clickLogin();
 		Assert.assertTrue(flag, "Login failed with valid credentials");
 		logger.end("TC_07: Verify login with valid credentials");
+		
 	}
 	
 	
