@@ -17,11 +17,10 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
-
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -259,21 +258,20 @@ public class BaseClass {
 //		}
     }
 
-    @AfterMethod(alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void tearDown() {
         WebDriver d = tlDriver.get();
+
         if (d != null) {
             try {
                 d.quit();
             } catch (Exception e) {
-                // swallow and continue cleanup
                 System.err.println("Error quitting WebDriver: " + e.getMessage());
             }
-            // remove the ThreadLocal value to avoid memory leaks
             tlDriver.remove();
         }
-        // clear the instance field
-        this.driver = null;
+
+        BaseClass.driver = null;
     }
 
 	/**
@@ -282,6 +280,11 @@ public class BaseClass {
 	protected String captureScreenshot(String testName) {
 		try {
 			WebDriver driver = getDriver();
+			
+		    if (driver == null) {
+	            System.out.println("Driver is null, screenshot skipped");
+	            return null;
+	        }
 
 			File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
