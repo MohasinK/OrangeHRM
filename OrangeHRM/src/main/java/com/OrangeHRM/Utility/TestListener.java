@@ -51,29 +51,37 @@ public class TestListener extends BaseClass implements ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        String path = captureScreenshot(result.getMethod().getMethodName());
+        test.get().pass("Test Passed");
 
-        try {
-            test.get().pass(
-                    "✅ Test Passed",
-                    MediaEntityBuilder.createScreenCaptureFromPath(path).build()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
+        String screenshotPath = captureScreenshot(result.getMethod().getMethodName());
+
+        if (screenshotPath != null && !screenshotPath.isEmpty()) {
+            try {
+                test.get().pass("Screenshot on pass",
+                        MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
+            } catch (Exception e) {
+                test.get().warning("Unable to attach pass screenshot: " + e.getMessage());
+            }
+        } else {
+            test.get().warning("Pass screenshot not captured because driver was null.");
         }
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        String path = captureScreenshot(result.getMethod().getMethodName());
+        test.get().fail(result.getThrowable());
 
-        try {
-            test.get().fail(
-                    "❌ Test Failed: " + result.getThrowable(),
-                    MediaEntityBuilder.createScreenCaptureFromPath(path).build()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
+        String screenshotPath = captureScreenshot(result.getMethod().getMethodName());
+
+        if (screenshotPath != null && !screenshotPath.isEmpty()) {
+            try {
+                test.get().fail("Screenshot on failure",
+                        MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
+            } catch (Exception e) {
+                test.get().warning("Unable to attach failure screenshot: " + e.getMessage());
+            }
+        } else {
+            test.get().warning("Failure screenshot not captured because driver was null.");
         }
     }
 
