@@ -21,11 +21,11 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                bat 'mvn test -Dsurefire.suiteXmlFiles=testng.xml'
-            }
+           stage('Run Tests') {
+        steps {
+            bat 'mvn clean test -Dchrome.headless=true'
         }
+    }
 
         stage('Publish Report') {
             steps {
