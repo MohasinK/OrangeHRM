@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite thread-count="1" name="Failed suite [OrangeHRM Suite]" guice-stage="DEVELOPMENT">
+  <test thread-count="1" name="Smoke Tests(failed)">
+    <classes>
+      <class name="TestCases.LoginPageTest">
+        <methods>
+          <include name="TC_07"/>
+          <include name="recordResult"/>
+          <include name="tearDown"/>
+          <include name="beforeMethod"/>
+          <include name="initReport"/>
+          <include name="setUp"/>
+          <include name="tearDownReport"/>
+        </methods>
+      </class> <!-- TestCases.LoginPageTest -->
+    </classes>
+  </test> <!-- Smoke Tests(failed) -->
+</suite> <!-- Failed suite [OrangeHRM Suite] -->
