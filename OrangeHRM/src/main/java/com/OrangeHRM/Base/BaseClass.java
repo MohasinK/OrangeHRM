@@ -212,7 +212,7 @@ public class BaseClass {
         driver = tlDriver.get();
 
         // Common configuration - use properties if present
-        int implicit = getConfigInt("implicitly.wait.seconds", 10);
+        int implicit = getConfigInt("implicitly.wait.seconds", 20);
         int pageLoad = getConfigInt("pageLoad.timeout.seconds", 30);
 
         if (!"true".equalsIgnoreCase(headless)) {

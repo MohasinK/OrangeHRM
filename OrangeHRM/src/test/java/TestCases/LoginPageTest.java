@@ -4,7 +4,6 @@ import java.io.IOException;
 
 
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -49,8 +48,10 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 1,description = "To verify navigate to login page")
-	public void TC_01()
+	public void TC_01() throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_01: Verify navigation to login page");
 		boolean flag = login.verifyLoginPage();
 		Assert.assertTrue(flag, "Login page verification failed");
@@ -58,8 +59,10 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 2,description = "To verify logo is displayed on login page")
-	public void TC_02()
+	public void TC_02()throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_02: Verify logo is displayed on login page");
 		boolean flag = login.isOrangeHRMLogoDisplayed();
 		Assert.assertTrue(flag, "Logo is not displayed on login page");
@@ -67,8 +70,10 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 3,description = "To verify forgot password link is displayed on login page")
-	public void TC_03()
+	public void TC_03()throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_03: Verify forgot password link is displayed on login page");
 		boolean flag = login.isForgotPasswordDisplayed();
 		Assert.assertTrue(flag, "Forgot password link is not displayed on login page");
@@ -76,8 +81,10 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 4,description = "To verify login header is displayed on login page")
-	public void TC_04()
+	public void TC_04()throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_04: Verify login header is displayed on login page");
 		boolean flag = login.isLoginHeaderDisplayed();
 		Assert.assertTrue(flag, "Login header is not displayed on login page");
@@ -85,8 +92,10 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 5,description = "To verify company branding is displayed on login page")
-	public void TC_05()
+	public void TC_05()throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_05: Verify company branding is displayed on login page");
 		boolean flag = login.isCompanyBrandingDisplayed();
 		Assert.assertTrue(flag, "Company branding is not displayed on login page");
@@ -94,8 +103,10 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 6,description = "To verify user is able to login with Invalid credentials")
-	public void TC_06()
+	public void TC_06()throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_06: Verify login with invalid credentials");
 		login.enterUsername(excel.getCellData(SheetName, 1, 0));
 		login.enterPassword(excel.getCellData(SheetName, 1, 1));
@@ -106,19 +117,16 @@ public class LoginPageTest extends BaseClass{
 	}
 	
 	@Test(priority = 7,description = "To verify user is able to login with valid credentials")
-	public void TC_07()
+	public void TC_07() throws IOException
 	{
+		excel = new ExcelLibrary();
+		login = new LoginPage();
 		logger.start("TC_07: Verify login with valid credentials");
 		login.enterUsername(excel.getCellData(SheetName, 2, 0));
 		login.enterPassword(excel.getCellData(SheetName, 2, 1));
 		boolean flag = login.clickLogin();
 		Assert.assertTrue(flag, "Login failed with valid credentials");
 		logger.end("TC_07: Verify login with valid credentials");
-	}
-	
-	@AfterClass
-	public void tearDown() {
-		driver.quit();
 	}
 	
 	
