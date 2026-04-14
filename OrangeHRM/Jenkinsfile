@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-	  triggers {
-	        pollSCM('H/2 * * * *')
-	    }
+    triggers {
+        pollSCM('* * * * *')
+    }
 
     tools {
         maven 'Maven3'
@@ -29,27 +29,22 @@ pipeline {
 
         stage('Report') {
             steps {
-                publishHTML(target: [
-                    reportDir: 'OrangeHRM/test-output',
-                    reportFiles: 'emailable-report.html',
-                    reportName: 'Automation Report',
-                    keepAll: true,
-                    alwaysLinkToLastBuild: true,
-                    allowMissing: true
-                ])
+                echo 'Reports generated in OrangeHRM/test-output'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'OrangeHRM/ScreenShots/*.png', fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: 'OrangeHRM/ScreenShots/*.png',
+                             fingerprint: true,
+                             allowEmptyArchive: true
         }
         success {
-            echo 'Build Passed'
+            echo 'Build Passed ✅'
         }
         failure {
-            echo 'Build Failed'
+            echo 'Build Failed ❌'
         }
     }
 }
