@@ -7,31 +7,31 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/MohasinK/OrangeHRM.git'
-            }
-        }
-
         stage('Build') {
             steps {
-                bat 'mvn clean compile'
+                dir('OrangeHRM') {
+                    bat 'mvn clean compile'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn test'
+                dir('OrangeHRM') {
+                    bat 'mvn test'
+                }
             }
         }
 
         stage('Report') {
             steps {
                 publishHTML(target: [
-                    reportDir: 'test-output',
+                    reportDir: 'OrangeHRM/test-output',
                     reportFiles: 'emailable-report.html',
-                    reportName: 'Automation Report'
+                    reportName: 'Automation Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
                 ])
             }
         }
@@ -39,7 +39,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'ScreenShots/*.png', fingerprint: true
+            archiveArtifacts artifacts: 'OrangeHRM/ScreenShots/*.png', fingerprint: true, allowEmptyArchive: true
         }
         success {
             echo 'Build Passed'
