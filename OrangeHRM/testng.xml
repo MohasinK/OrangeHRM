@@ -11,7 +11,8 @@
 
   <test thread-count="2" name="Smoke Tests">
     <classes>
-
+	
+			<!--		TestCases-->
       <class name="TestCases.LoginPageTest"/>
 
     </classes>
