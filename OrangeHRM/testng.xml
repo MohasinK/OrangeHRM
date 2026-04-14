@@ -12,7 +12,7 @@
   <test thread-count="2" name="Smoke Tests">
     <classes>
 	
-			<!-- TestCases First-->
+			<!-- TestCases Meta-->
       <class name="TestCases.LoginPageTest"/>
 
     </classes>
