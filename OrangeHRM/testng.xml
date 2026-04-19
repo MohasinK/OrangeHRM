@@ -13,7 +13,7 @@
     <classes>
 	
 			<!-- TestCases First-->
-      <class name="TestCases.LoginPageTest"/>
+      <class name="TestCasesUI.LoginPageTest"/>
 
     </classes>
   </test> <!-- Test -->
